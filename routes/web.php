@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Post_job;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Console\View\Components\Mutators\EnsurePunctuation;
@@ -19,8 +20,12 @@ Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('aut
 
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::put('/updateProfile', [AuthController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/updateProfile', [AuthController::class, 'updateProfile'])->name('updateProfile');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // POST JOB ROUTES
+    Route::get('/create_post_job', [Post_job::class, 'index'])->name('create_post_job');
+    Route::post('/save_post_job', [Post_job::class, 'index'])->name('save_post_job');
 });
 
 

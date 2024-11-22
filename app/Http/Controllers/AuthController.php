@@ -84,6 +84,7 @@ class AuthController extends Controller
         $id = Auth::user()->id;
         // Gets all record of id that matches first
         $data = User::where('id', $id)->first();
+        // dd($data);
         return view('frontend.auth.profile', compact('data'));
     }
 
@@ -95,14 +96,28 @@ class AuthController extends Controller
         $validation = Validator::make($request->all(), [
             'name' => 'required|min:6|max:20',
             'email' => 'required|email|unique:users,email,'.$id.',id',
+            'profileImage' => 'nullable|image|mimes:png,jpg,jpeg|max:3000',
+            'description' => 'max:255'
         ]);
 
         if($validation->passes()){
             $user = User::find($id);
+
+            // Getting profile image with extension & changing its name with time, saving it to profileImage folder in public. Then saving $path to db
+            if($request->hasFile('profileImage')){
+                $fileName = time().'.'.$request->file('profileImage')->getClientOriginalExtension();
+                $path = $request->file('profileImage')->storeAs('profileImage',$fileName, 'public');
+            }
+            else{
+                $path = $user->image;
+            }
+
             $user->name = $request->name;
             $user->email = $request->email;
             $user->designation = $request->designation;
             $user->mobile = $request->mobile;
+            $user->description = $request->description;
+            $user->image = $path;
             $user->save();
 
             session()->flash('success', 'Profile updated successfully.');
@@ -119,3 +134,5 @@ class AuthController extends Controller
         }
     }
 }
+
+// Work On image deleting process. If user updates the image, it creates new image but also saves old image. It should replace old one.

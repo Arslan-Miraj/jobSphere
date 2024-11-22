@@ -20,10 +20,17 @@
             <div class="col-lg-9">
                 @include('frontend.message')
                 <div class="card border-0 shadow mb-4">
-                    <form action="" method="put" id="profileForm">
+                    <form id="profileForm" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body  p-4">
                             <h3 class="fs-4 mb-1">My Profile</h3>
+                            <div class="mb-4">
+                                <label for="profile_pic" class="form-label">Profile Picture</label>
+                                <input class="form-control" type="file" id="profileImage" name="profileImage" accept=".jpg,.png,.jpeg">
+                                @error('profileImage')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                              </div>
                             <div class="mb-4">
                                 <label for="" class="mb-2">Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" id="name" placeholder="Name" class="form-control" value="{{ $data->name }}">
@@ -41,6 +48,10 @@
                             <div class="mb-4">
                                 <label for="" class="mb-2">Mobile</label>
                                 <input type="text" name="mobile" id="mobile" placeholder="Mobile" class="form-control" value="{{ $data->mobile }}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="" class="mb-2">Description</label>
+                                <textarea name="description" id="description" cols="100" rows="5">{{ $data->description }}</textarea>
                             </div>                        
                         </div>
                         <div class="card-footer  p-4">
@@ -80,11 +91,14 @@
     $('#profileForm').submit(function(e){
         e.preventDefault();
 
+        let formData = new FormData(this);
         $.ajax({
             url: '{{ route("updateProfile") }}',
-            type: 'put',
+            type: 'post',
             dataType: 'json',
-            data: $("#profileForm").serializeArray(),
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function(response){
                 if (response.status == true){
                     $('#name').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
