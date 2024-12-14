@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        Job_category::factory()->count(5)->create();
-        Job_type::factory()->count(5)->create();
+        // Job_category::factory()->count(5)->create();
+        // Job_type::factory()->count(5)->create();
+
+        \App\Models\Post_job::factory(25)->create();
     }
 }
